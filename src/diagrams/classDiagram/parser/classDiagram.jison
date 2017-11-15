@@ -21,6 +21,7 @@
 
 
 "class"               return 'CLASS';
+"enum"                return 'ENUM';
 ["]                   this.begin("string");
 <string>["]           this.popState();
 <string>[^"]*         return "STR";
@@ -44,6 +45,7 @@
 [A-Za-z]+             return 'ALPHA';
 [!"#$%&'*+,-.`?\\_/]  return 'PUNCTUATION';
 [0-9]+                 return 'NUM';
+\[(\d+|\*|\d+..(\*|\d+))\]          return 'CARDINALITY';
 [\u00AA\u00B5\u00BA\u00C0-\u00D6\u00D8-\u00F6]|
 [\u00F8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377]|
 [\u037A-\u037D\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5]|
@@ -139,13 +141,14 @@ className
 statement
     : relationStatement       { yy.addRelation($1); }
     | relationStatement LABEL { $1.title =  yy.cleanupLabel($2); yy.addRelation($1);        }
-    | classStatement
+    | classStatement          
     | methodStatement
     ;
 
 classStatement
-    : CLASS className
+    : CLASS className         { yy.addClass($2); }
     | CLASS className STRUCT_START members STRUCT_STOP {/*console.log($2,JSON.stringify($4));*/yy.addMembers($2,$4);}
+    | CLASS className ENUM    { yy.addClass($2, true)}
     ;
 
 members
@@ -162,9 +165,21 @@ methodStatement
 
 relationStatement
     : className relation className          { $$ = {'id1':$1,'id2':$3, relation:$2, relationTitle1:'none', relationTitle2:'none'}; }
+    | className CARDINALITY relation className { $$ = {'id1':$1,'id2':$4, relation:$3, cardinality1:$2, cardinality2:'none', relationTitle1:'none', relationTitle2:'none'}; }
+    | className relation CARDINALITY className { $$ = {'id1':$1,'id2':$4, relation:$2, cardinality1:'none', cardinality2:$3, relationTitle1:'none', relationTitle2:'none'}; }
+    | className CARDINALITY relation CARDINALITY className { $$ = {'id1':$1,'id2':$5, relation:$3, cardinality1:$2, cardinality2:$4, relationTitle1:'none', relationTitle2:'none'}; }
     | className STR relation className      { $$ = {id1:$1, id2:$4, relation:$3, relationTitle1:$2, relationTitle2:'none'}}
+    | className STR CARDINALITY relation className      { $$ = {id1:$1, id2:$5, relation:$4, cardinality1:$3, cardinality2:'none', relationTitle1:$2, relationTitle2:'none'}}
+    | className STR relation CARDINALITY className      { $$ = {id1:$1, id2:$5, relation:$3, cardinality1:'none', cardinality2:$4, relationTitle1:$2, relationTitle2:'none'}}
+    | className STR CARDINALITY relation CARDINALITY className      { $$ = {id1:$1, id2:$6, relation:$4, cardinality1:$3, cardinality2:$5, relationTitle1:$2, relationTitle2:'none'}}
     | className relation STR className      { $$ = {id1:$1, id2:$4, relation:$2, relationTitle1:'none', relationTitle2:$3}; }
+    | className CARDINALITY relation STR className      { $$ = {id1:$1, id2:$5, relation:$3, cardinality1:$2, cardinality2:'none', relationTitle1:'none', relationTitle2:$4}}
+    | className relation CARDINALITY STR className      { $$ = {id1:$1, id2:$5, relation:$2, cardinality1:'none', cardinality2:$3, relationTitle1:'none', relationTitle2:$4}}
+    | className CARDINALITY relation CARDINALITY STR className      { $$ = {id1:$1, id2:$6, relation:$3, cardinality1:$2, cardinality2:$4, relationTitle1:'none', relationTitle2:$5}}
     | className STR relation STR className  { $$ = {id1:$1, id2:$5, relation:$3, relationTitle1:$2, relationTitle2:$4} }
+    | className STR CARDINALITY relation STR className  { $$ = {id1:$1, id2:$6, relation:$4, cardinality1:$3, cardinality2:'none', relationTitle1:$2, relationTitle2:$5} }
+    | className STR relation CARDINALITY STR className  { $$ = {id1:$1, id2:$6, relation:$3, cardinality1:'none', cardinality2:$4, relationTitle1:$2, relationTitle2:$5} }
+    | className STR CARDINALITY relation CARDINALITY STR className  { $$ = {id1:$1, id2:$7, relation:$4, cardinality1:$3, cardinality2:$5, relationTitle1:$2, relationTitle2:$6} }
     ;
 
 relation

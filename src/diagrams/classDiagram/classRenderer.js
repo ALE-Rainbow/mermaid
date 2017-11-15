@@ -14,7 +14,7 @@ let classCnt = 0
 const conf = {
   dividerMargin: 10,
   padding: 5,
-  textHeight: 10
+  textHeight: 8
 }
 
 // Todo optimize
@@ -43,7 +43,7 @@ const insertMarkers = function (elem) {
     .attr('markerHeight', 240)
     .attr('orient', 'auto')
     .append('path')
-    .attr('d', 'M 1,7 L18,13 V 1 Z')
+    .attr('d', 'M 1,7 L13,13 V 1 Z')
 
   elem.append('defs').append('marker')
     .attr('id', 'extensionEnd')
@@ -53,7 +53,7 @@ const insertMarkers = function (elem) {
     .attr('markerHeight', 28)
     .attr('orient', 'auto')
     .append('path')
-    .attr('d', 'M 1,1 V 13 L18,7 Z') // this is actual shape for arrowhead
+    .attr('d', 'M 7,1 V 13 L18,7 Z') // this is actual shape for arrowhead
 
   elem.append('defs').append('marker')
     .attr('id', 'compositionStart')
@@ -200,6 +200,36 @@ const drawEdge = function (elem, path, relation) {
       .attr('height', bounds.height + conf.padding)
   }
 
+  x = Math.ceil(lineData[0].x)
+  y = Math.ceil(lineData[0].y)
+
+  if (relation.cardinality1 !== 'none') {
+    const g = elem.append('g')
+      .attr('class', 'classLabel')
+    g.append('text')
+      .attr('class', 'label')
+      .attr('x', x + 12)
+      .attr('y', y + 12)
+      .attr('fill', 'red')
+      .attr('text-anchor', 'middle')
+      .text(relation.cardinality1)
+  }
+
+  x = Math.floor(lineData[lineData.length - 1].x)
+  y = Math.floor(lineData[lineData.length - 1].y)
+
+  if (relation.cardinality2 !== 'none') {
+    const g = elem.append('g')
+      .attr('class', 'classLabel')
+    g.append('text')
+      .attr('class', 'label')
+      .attr('x', x + 12)
+      .attr('y', y - 8)
+      .attr('fill', 'red')
+      .attr('text-anchor', 'middle')
+      .text(relation.cardinality2)
+  }
+
   edgeCount++
 }
 
@@ -223,13 +253,18 @@ const drawClass = function (elem, classDef) {
     height: 0
   }
 
+  var enumeration = ''
+  if (classDef.enum) {
+    enumeration = ' <<enum>>'
+  }
   const g = elem.append('g')
     .attr('id', id)
     .attr('class', 'classGroup')
   const title = g.append('text')
     .attr('x', conf.padding)
     .attr('y', conf.textHeight + conf.padding)
-    .text(classDef.id)
+    .attr('class', 'classTitle')
+    .text(classDef.id + enumeration)
 
   const titleHeight = title.node().getBBox().height
 
@@ -240,7 +275,7 @@ const drawClass = function (elem, classDef) {
 
   const members = g.append('text')      // text label for the x axis
     .attr('x', conf.padding)
-    .attr('y', titleHeight + (conf.dividerMargin) + conf.textHeight)
+    .attr('y', titleHeight + (conf.dividerMargin) + conf.textHeight + conf.padding)
     .attr('fill', 'white')
     .attr('class', 'classText')
 
@@ -271,7 +306,15 @@ const drawClass = function (elem, classDef) {
   })
 
   const classBox = g.node().getBBox()
+
   g.insert('rect', ':first-child')
+    .attr('class', 'classTitleBox')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', classBox.width + 2 * conf.padding)
+    .attr('height', conf.padding + titleHeight + conf.dividerMargin / 2)
+
+  g.insert('rect' , ':first-child')
     .attr('x', 0)
     .attr('y', 0)
     .attr('width', classBox.width + 2 * conf.padding)
@@ -333,7 +376,7 @@ export const draw = function (text, id) {
     // Add nodes to the graph. The first argument is the node id. The second is
     // metadata about the node. In this case we're going to add labels to each of
     // our nodes.
-    g.setNode(node.id, node)
+    g.setNode(node.id, node, {rank: (i%3).toString()})
     logger.info('Org height: ' + node.height)
   }
 

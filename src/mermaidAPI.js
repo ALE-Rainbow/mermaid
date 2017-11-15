@@ -39,12 +39,14 @@ import darkTheme from './less/dark/mermaid.less'
 import defaultTheme from './less/default/mermaid.less'
 import forestTheme from './less/forest/mermaid.less'
 import neutralTheme from './less/neutral/mermaid.less'
+import rainbowTheme from './less/rainbow/mermaid.less'
 
 const themes = {
   dark: darkTheme,
   default: defaultTheme,
   forest: forestTheme,
-  neutral: neutralTheme
+  neutral: neutralTheme,
+  rainbow: rainbowTheme
 }
 
 /**
