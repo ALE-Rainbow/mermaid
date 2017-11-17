@@ -8,98 +8,138 @@
 </head>
 <body>
   <div class="mermaid">
-graph TD
-A[Christmas] -->|Get money| B(Go shopping)
-B --> C{Let me think}
-C -->|One| D[Laptop]
-C -->|Two| E[iPhone]
-C -->|Three| F[Car]
-  </div>
+    classDiagram
+    class WebRTC
+    class SDK
+    class Presence
+    class Telephony
+    class IM
+    class FileStorage
+    class CPaaS Service
+    class Conversations
+    class Contacts
+    class Connection
+    class Capabilities
+    class Bubbles
+    class Admin Service
+    Bubbles : Bubble : createBubble(string strName, string strDescription, string boolWithHistory)
+    Bubbles : Object : deleteBubble(Room bubble)
+    Bubbles : Object : deleteAllBubbles()
+    Bubbles : Bubble : inviteContactToBubble(Contact contact, Bubble bubble, Boolean boolAsModerator, Boolean boolWithInvitation)
+    Bubbles : Bubble : removeContactFromBubble(Contact contact, Bubble bubble)
+    Bubbles : Bubble : acceptInvitationToJoinBubble(Bubble bubble)
+    Bubbles : Bubble : declineInvitationToJoinBubble(Bubble bubble)
+    Bubbles : Bubble : leaveBubble(Bubble bubble)
+    Bubbles : Object : closeBubble(Bubble bubble)
+    Bubbles : Boolean : isBubbleArchived()
+    Bubbles : Bubble : getBubbleById(string strBubbleId)
+    Bubbles : Bubble : updateDescriptionForBubble(string strDescription, Bubble bubble)
+    Bubbles : Bubble : updateCustomDataForBubble(Object customData, Bubble bubble)
+    Bubbles : Bubble : deleteCustomDataForBubble(Bubble bubble)
+    Capabilities : boolean : hasS4BExtensionEnabled()
+    Capabilities : boolean : hasOutlookExtensionEnabled()
+    Capabilities : boolean : hasCalendarPresenceEnabled()
+    Capabilities : boolean : hasTelephonyBasicCallEnabled()
+    Capabilities : boolean : hasTelephonySecondCallEnabled()
+    Capabilities : boolean : hasTelephonyTransferCallEnabled()
+    Capabilities : boolean : hasTelephonyConferenceCallEnabled()
+    Capabilities : boolean : hasTelephonyDeflectCallEnabled()
+    Capabilities : boolean : hasTelephonyForwardCallEnabled()
+    Capabilities : boolean : hasTelephonyPhoneBookEnabled()
+    Capabilities : boolean : hasTelephonyVoiceMailEnabled()
+    Capabilities : boolean : hasWebRTCAudioMobileEnabled()
+    Capabilities : boolean : hasWebRTCVideoMobileEnabled()
+    Capabilities : boolean : hasBridgeConferenceEnabled()
+    Capabilities : boolean : hasBridgeConferenceRecordEnabled()
+    Capabilities : boolean : hasBridgeConferenceDialOutEnabled()
+    Capabilities : Number : maxParticipantsPerBubbleAllowed()
+    Capabilities : Number : maxParticipantsPerBridgeConferenceAllowed()
+    Capabilities : Number : maxFileStorageQuotaAllowed()
+    Connection : Object : signin(String strLogin, String strPassword)
+    Connection : Object : signinOnRainbowOfficial(String strLogin, String strPassword)
+    Connection : Object : signout()
+    Connection : String : getState()
+    Contacts : Contact : getContactByJID(String strJID)
+    Contacts : Contact : getContactById(String strId)
+    Contacts : Contact : getConnectedUser()
+    Contacts : Object : getConnectedUserPhone()
+    Contacts : Contact : searchByLogin(string strLogin)
+    Contacts : Contact : searchByJid(string strJid)
+    Contacts : Contact : searchById(string strId)
+    Contacts : Object : acceptInvitation(Invitation invitation)
+    Contacts : Object : declineInvitation(Invitation invitation)
+    Contacts : Object : addToContactsList(Contact contact)
+    Contacts : Object : removeFromContactsList(Contact contact)
+    Contacts : Invitation : getInvitationById(String strInvitationId)
+    Conversations : Call : getCallById(String strCallId)
+    Conversations : Conversation : getConversationById(String strId)
+    Conversations : Conversation : getConversationByBubbleId(String strBubbleId)
+    Conversations : Conversation : openConversationForContact(Contact contact)
+    Conversations : Conversation : openConversationForBubble(Bubble bubble)
+    Conversations : void : closeConversation(Conversation conversation)
+    FileStorage : Message : uploadFileToConversation(Conversation conversation, File file, String strMessage)
+    FileStorage : Message : uploadFileToBubble(Bubble bubble, File file, String strMessage)
+    FileStorage : Blob : downloadFile(FileDescriptor fileDescriptor)
+    FileStorage : Object : removeFile(FileDescriptor fileDescriptor)
+    IM : Conversation : getMessagesFromConversation(Conversation conversation, Number intNbMessage)
+    IM : Message : getMessageFromConversationById(Conversation conversation, String strMessageId)
+    IM : Message : getMessageFromBubbleById(Bubble bubble, String strMessageId)
+    IM : Message : sendMessageToConversation(Conversation conversation, string strMessage)
+    IM : Message : sendMessageToBubble(Bubble bubble, string strMessage)
+    IM : Object : removeAllMessagesFromConversation(Conversation conversation)
+    IM : Object : markMessageFromConversationAsRead(Conversation conversation, Message message)
+    Telephony : boolean : isTelephonyAvailable()
+    Telephony : string : getAgentVersion()
+    Telephony : string : getXMPPAgentStatus()
+    Telephony : string : getPhoneAPIStatus()
+    Telephony : Object : callByNumber(String strPhoneNumber)
+    Telephony : Object : release(Call call)
+    Telephony : Object : answer(Call call)
+    Telephony : Object : hold(Call call)
+    Telephony : Object : retrieve(Call call)
+    Presence : Object : setPresenceTo(String strPresenceState)
+    SDK : string : version()
+    SDK : string : mode()
+    SDK : void : setVerboseLog(boolean boolHasVerboseLog)
+    SDK : void : useAngularEvents(boolean boolUseAngularEvents)
+    SDK : void : initialize(string strApplicationID, string strApplicationSecret)
+    WebRTC : Object : setChromeExtensionIdForSharing(String strExtensionId)
+    WebRTC : Object : callInAudio(Contact contact)
+    WebRTC : Object : callInVideo(Contact contact)
+    WebRTC : Object : callInSharing(Contact contact)
+    WebRTC : Object : callinAudioWithSharing(Contact contact)
+    WebRTC : Object : answerInAudio(Call call)
+    WebRTC : Object : answerInVideo(Call call)
+    WebRTC : Object : showLocalVideo()
+    WebRTC : Object : hideLocalVideo()
+    WebRTC : Object : showRemoteVideo(Call call)
+    WebRTC : Object : hideRemoteVideo(Call call)
+    WebRTC : Object : escaladeToVideoCall(Call call)
+    WebRTC : Object : escaladeToSharingCall(Call call)
+    WebRTC : Object : reverseToAudioCall(Call call)
+    WebRTC : Object : release(Call call)
+    WebRTC : Object : reject(Call call)
+    WebRTC : Object : muteAudioCall(Conversation conversation)
+    WebRTC : Object : muteVideoCall(Conversation conversation)
+    WebRTC : Object : unmuteAudioCall(Conversation conversation)
+    WebRTC : Object : unmuteVideoCall(Conversation conversation)
+    WebRTC : boolean : canMakeAudioVideoCall()
+    WebRTC : boolean : hasAMicrophone()
+    WebRTC : Object : useMicrophone(string strMicrophoneId)
+    WebRTC : Object : useSpeaker(string strSpeakerId)
+    WebRTC : Object : useCamera(string strCameraId)
+    WebRTC : Object : canMakeDesktopSharingCall()
 
-  <hr/>
-
-  <div class="mermaid">
-sequenceDiagram
-loop every day
-    Alice->>John: Hello John, how are you?
-    John-->>Alice: Great!
-end
-  </div>
-
-  <hr/>
-
-  <div class="mermaid">
-gantt
-dateFormat  YYYY-MM-DD
-title Adding GANTT diagram to mermaid
-
-section A section
-Completed task            :done,    des1, 2014-01-06,2014-01-08
-Active task               :active,  des2, 2014-01-09, 3d
-Future task               :         des3, after des2, 5d
-Future task2               :         des4, after des3, 5d
-
-section Critical tasks
-Completed task in the critical line :crit, done, 2014-01-06,24h
-Implement parser and jison          :crit, done, after des1, 2d
-Create tests for parser             :crit, active, 3d
-Future task in critical line        :crit, 5d
-Create tests for renderer           :2d
-Add to mermaid                      :1d
-
-section Documentation
-Describe gantt syntax               :active, a1, after des1, 3d
-Add gantt diagram to demo page      :after a1  , 20h
-Add another diagram to demo page    :doc1, after a1  , 48h
-
-section Last section
-Describe gantt syntax               :after doc1, 3d
-Add gantt diagram to demo page      : 20h
-Add another diagram to demo page    : 48h
-  </div>
-
-  <hr/>
-
-  <div class="mermaid">
-gitGraph:
-options
-{
-    "nodeSpacing": 150,
-    "nodeRadius": 10
-}
-end
-commit
-branch newbranch
-checkout newbranch
-commit
-commit
-checkout master
-commit
-commit
-merge newbranch
-  </div>
-
-  <hr/>
-
-  <div class="mermaid">
-classDiagram
-Class01 <|-- AveryLongClass : Cool
-Class03 *-- Class04
-Class05 o-- Class06
-Class07 .. Class08
-Class09 --> C2 : Where am i?
-Class09 --* C3
-Class09 --|> Class07
-Class07 : equals()
-Class07 : Object[] elementData
-Class01 : size()
-Class01 : int chimp
-Class01 : int gorilla
-Class08 <--> C2: Cool label
+    IM --> FileStorage
+    FileStorage --> Conversations
+    Conversations --> Bubbles
+    Telephony --> WebRTC
+    Presence --> Contacts
+    Contacts --> Connection
   </div>
   <script src="./mermaid.js"></script>
   <script>
-    mermaid.initialize({startOnLoad: true, theme: 'forest'});
+    mermaid.initialize({startOnLoad: true, theme: 'rainbow'});
   </script>
 </body>
 </html>
