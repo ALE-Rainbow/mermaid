@@ -9,20 +9,11 @@
 <body>
   <div class="mermaid">
     classDiagram
-    class WebRTC
-    class SDK
-    class Presence
-    class Telephony
-    class IM
-    class FileStorage
-    class CPaaS Service
-    class Conversations
-    class Contacts
-    class Connection
-    class Capabilities
     class Bubbles
-    class Admin Service
-    Bubbles : Bubble : createBubble(string strName, string strDescription, string boolWithHistory)
+    Bubbles ::event : RAINBOW_ONBUBBLEINVITATIONTOJOINRECEIVED
+    Bubbles ::event : RAINBOW_ONBUBBLEUPDATED
+    Bubbles : String : Hopla
+    Bubbles : Bubble : createBubble(string strName, string strDescription, boolean boolWithHistory)
     Bubbles : Object : deleteBubble(Room bubble)
     Bubbles : Object : deleteAllBubbles()
     Bubbles : Bubble : inviteContactToBubble(Contact contact, Bubble bubble, Boolean boolAsModerator, Boolean boolWithInvitation)
@@ -32,110 +23,13 @@
     Bubbles : Bubble : leaveBubble(Bubble bubble)
     Bubbles : Object : closeBubble(Bubble bubble)
     Bubbles : Boolean : isBubbleArchived()
+    Bubbles : Bubble[] : getAllBubbles()
+    Bubbles : Bubble[] : getAllOwnedBubbles()
+    Bubbles : Bubble[] : getAllPendingBubbles()
     Bubbles : Bubble : getBubbleById(string strBubbleId)
     Bubbles : Bubble : updateDescriptionForBubble(string strDescription, Bubble bubble)
     Bubbles : Bubble : updateCustomDataForBubble(Object customData, Bubble bubble)
     Bubbles : Bubble : deleteCustomDataForBubble(Bubble bubble)
-    Capabilities : boolean : hasS4BExtensionEnabled()
-    Capabilities : boolean : hasOutlookExtensionEnabled()
-    Capabilities : boolean : hasCalendarPresenceEnabled()
-    Capabilities : boolean : hasTelephonyBasicCallEnabled()
-    Capabilities : boolean : hasTelephonySecondCallEnabled()
-    Capabilities : boolean : hasTelephonyTransferCallEnabled()
-    Capabilities : boolean : hasTelephonyConferenceCallEnabled()
-    Capabilities : boolean : hasTelephonyDeflectCallEnabled()
-    Capabilities : boolean : hasTelephonyForwardCallEnabled()
-    Capabilities : boolean : hasTelephonyPhoneBookEnabled()
-    Capabilities : boolean : hasTelephonyVoiceMailEnabled()
-    Capabilities : boolean : hasWebRTCAudioMobileEnabled()
-    Capabilities : boolean : hasWebRTCVideoMobileEnabled()
-    Capabilities : boolean : hasBridgeConferenceEnabled()
-    Capabilities : boolean : hasBridgeConferenceRecordEnabled()
-    Capabilities : boolean : hasBridgeConferenceDialOutEnabled()
-    Capabilities : Number : maxParticipantsPerBubbleAllowed()
-    Capabilities : Number : maxParticipantsPerBridgeConferenceAllowed()
-    Capabilities : Number : maxFileStorageQuotaAllowed()
-    Connection : Object : signin(String strLogin, String strPassword)
-    Connection : Object : signinOnRainbowOfficial(String strLogin, String strPassword)
-    Connection : Object : signout()
-    Connection : String : getState()
-    Contacts : Contact : getContactByJID(String strJID)
-    Contacts : Contact : getContactById(String strId)
-    Contacts : Contact : getConnectedUser()
-    Contacts : Object : getConnectedUserPhone()
-    Contacts : Contact : searchByLogin(string strLogin)
-    Contacts : Contact : searchByJid(string strJid)
-    Contacts : Contact : searchById(string strId)
-    Contacts : Object : acceptInvitation(Invitation invitation)
-    Contacts : Object : declineInvitation(Invitation invitation)
-    Contacts : Object : addToContactsList(Contact contact)
-    Contacts : Object : removeFromContactsList(Contact contact)
-    Contacts : Invitation : getInvitationById(String strInvitationId)
-    Conversations : Call : getCallById(String strCallId)
-    Conversations : Conversation : getConversationById(String strId)
-    Conversations : Conversation : getConversationByBubbleId(String strBubbleId)
-    Conversations : Conversation : openConversationForContact(Contact contact)
-    Conversations : Conversation : openConversationForBubble(Bubble bubble)
-    Conversations : void : closeConversation(Conversation conversation)
-    FileStorage : Message : uploadFileToConversation(Conversation conversation, File file, String strMessage)
-    FileStorage : Message : uploadFileToBubble(Bubble bubble, File file, String strMessage)
-    FileStorage : Blob : downloadFile(FileDescriptor fileDescriptor)
-    FileStorage : Object : removeFile(FileDescriptor fileDescriptor)
-    IM : Conversation : getMessagesFromConversation(Conversation conversation, Number intNbMessage)
-    IM : Message : getMessageFromConversationById(Conversation conversation, String strMessageId)
-    IM : Message : getMessageFromBubbleById(Bubble bubble, String strMessageId)
-    IM : Message : sendMessageToConversation(Conversation conversation, string strMessage)
-    IM : Message : sendMessageToBubble(Bubble bubble, string strMessage)
-    IM : Object : removeAllMessagesFromConversation(Conversation conversation)
-    IM : Object : markMessageFromConversationAsRead(Conversation conversation, Message message)
-    Telephony : boolean : isTelephonyAvailable()
-    Telephony : string : getAgentVersion()
-    Telephony : string : getXMPPAgentStatus()
-    Telephony : string : getPhoneAPIStatus()
-    Telephony : Object : callByNumber(String strPhoneNumber)
-    Telephony : Object : release(Call call)
-    Telephony : Object : answer(Call call)
-    Telephony : Object : hold(Call call)
-    Telephony : Object : retrieve(Call call)
-    Presence : Object : setPresenceTo(String strPresenceState)
-    SDK : string : version()
-    SDK : string : mode()
-    SDK : void : setVerboseLog(boolean boolHasVerboseLog)
-    SDK : void : useAngularEvents(boolean boolUseAngularEvents)
-    SDK : void : initialize(string strApplicationID, string strApplicationSecret)
-    WebRTC : Object : setChromeExtensionIdForSharing(String strExtensionId)
-    WebRTC : Object : callInAudio(Contact contact)
-    WebRTC : Object : callInVideo(Contact contact)
-    WebRTC : Object : callInSharing(Contact contact)
-    WebRTC : Object : callinAudioWithSharing(Contact contact)
-    WebRTC : Object : answerInAudio(Call call)
-    WebRTC : Object : answerInVideo(Call call)
-    WebRTC : Object : showLocalVideo()
-    WebRTC : Object : hideLocalVideo()
-    WebRTC : Object : showRemoteVideo(Call call)
-    WebRTC : Object : hideRemoteVideo(Call call)
-    WebRTC : Object : escaladeToVideoCall(Call call)
-    WebRTC : Object : escaladeToSharingCall(Call call)
-    WebRTC : Object : reverseToAudioCall(Call call)
-    WebRTC : Object : release(Call call)
-    WebRTC : Object : reject(Call call)
-    WebRTC : Object : muteAudioCall(Conversation conversation)
-    WebRTC : Object : muteVideoCall(Conversation conversation)
-    WebRTC : Object : unmuteAudioCall(Conversation conversation)
-    WebRTC : Object : unmuteVideoCall(Conversation conversation)
-    WebRTC : boolean : canMakeAudioVideoCall()
-    WebRTC : boolean : hasAMicrophone()
-    WebRTC : Object : useMicrophone(string strMicrophoneId)
-    WebRTC : Object : useSpeaker(string strSpeakerId)
-    WebRTC : Object : useCamera(string strCameraId)
-    WebRTC : Object : canMakeDesktopSharingCall()
-
-    IM --> FileStorage
-    FileStorage --> Conversations
-    Conversations --> Bubbles
-    Telephony --> WebRTC
-    Presence --> Contacts
-    Contacts --> Connection
   </div>
   <script src="./mermaid.js"></script>
   <script>

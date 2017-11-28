@@ -22,6 +22,7 @@
 
 "class"               return 'CLASS';
 "enum"                return 'ENUM';
+"::event"               return 'EVENT';
 ["]                   this.begin("string");
 <string>["]           this.popState();
 <string>[^"]*         return "STR";
@@ -143,6 +144,7 @@ statement
     | relationStatement LABEL { $1.title =  yy.cleanupLabel($2); yy.addRelation($1);        }
     | classStatement          
     | methodStatement
+    | eventStatement
     ;
 
 classStatement
@@ -161,6 +163,10 @@ methodStatement
     | className LABEL {yy.addMembers($1,yy.cleanupLabel($2));}
     | MEMBER {console.warn('Member',$1);}
     | SEPARATOR {/*console.log('sep found',$1);*/}
+    ;
+
+eventStatement
+    : className EVENT LABEL {yy.addEvents($1, yy.cleanupLabel($3));}
     ;
 
 relationStatement

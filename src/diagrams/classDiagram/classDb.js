@@ -16,7 +16,8 @@ export const addClass = function (id) {
     classes[id] = {
       id: id,
       methods: [],
-      members: []
+      members: [],
+      events: []
     }
   }
 }
@@ -55,6 +56,13 @@ export const addMembers = function (className, MembersArr) {
   }
 }
 
+export const addEvents = function (className, event) {
+  const theClass = classes[className]
+  if (typeof event === 'string') {
+    theClass.events.push(event);
+  }
+}
+
 export const cleanupLabel = function (label) {
   if (label.substring(0, 1) === ':') {
     return label.substr(2).trim()
@@ -83,6 +91,7 @@ export default {
   getRelations,
   addRelation,
   addMembers,
+  addEvents,
   cleanupLabel,
   lineType,
   relationType

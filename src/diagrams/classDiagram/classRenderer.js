@@ -273,13 +273,28 @@ const drawClass = function (elem, classDef) {
     .attr('y1', conf.padding + titleHeight + conf.dividerMargin / 2)
     .attr('y2', conf.padding + titleHeight + conf.dividerMargin / 2)
 
-  const members = g.append('text')      // text label for the x axis
+  const events = g.append('text') 
     .attr('x', conf.padding)
     .attr('y', titleHeight + (conf.dividerMargin) + conf.textHeight + conf.padding)
+    .attr('fille', 'white')
+    .attr('class', 'eventText')
+
+  let isFirst = true
+  classDef.events.forEach(function (event) {
+    addTspan(events, event, isFirst)
+    isFirst = false
+  })
+
+  const eventsBox = events.node().getBBox()
+  
+
+  const members = g.append('text')      // text label for the x axis
+    .attr('x', conf.padding)
+    .attr('y', titleHeight + (conf.dividerMargin) + conf.textHeight + conf.padding + eventsBox.height)
     .attr('fill', 'white')
     .attr('class', 'classText')
 
-  let isFirst = true
+  isFirst = true
   classDef.members.forEach(function (member) {
     addTspan(members, member, isFirst)
     isFirst = false
@@ -289,12 +304,12 @@ const drawClass = function (elem, classDef) {
 
   const methodsLine = g.append('line')      // text label for the x axis
     .attr('x1', 0)
-    .attr('y1', conf.padding + titleHeight + conf.dividerMargin + membersBox.height)
-    .attr('y2', conf.padding + titleHeight + conf.dividerMargin + membersBox.height)
+    .attr('y1', conf.padding + titleHeight + conf.dividerMargin + eventsBox.height + membersBox.height)
+    .attr('y2', conf.padding + titleHeight + conf.dividerMargin + eventsBox.height + membersBox.height)
 
   const methods = g.append('text')      // text label for the x axis
     .attr('x', conf.padding)
-    .attr('y', titleHeight + 2 * conf.dividerMargin + membersBox.height + conf.textHeight)
+    .attr('y', titleHeight + 2 * conf.dividerMargin + eventsBox.height + membersBox.height + conf.textHeight)
     .attr('fill', 'white')
     .attr('class', 'classText')
 
