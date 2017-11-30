@@ -9,10 +9,29 @@
 <body>
   <div class="mermaid">
     classDiagram
+    class WebRTC
+    class SDK
+    class Presence
+    class Telephony
+    class IM
+    class Groups
+    class FileStorage
+    class CPaaS Service
+    class Conversations
+    class Contacts
+    class Connection
+    class Capabilities
     class Bubbles
+    class Admin Service
+    Presence --> Contacts
+    Contacts --> Connection
+    Telephony --> WebRTC
+    IM --> FileStorage
+    FileStorage --> Conversations
+    Conversations --> Bubbles
+    CPaas Service --> WebRTC
     Bubbles ::event : RAINBOW_ONBUBBLEINVITATIONTOJOINRECEIVED
     Bubbles ::event : RAINBOW_ONBUBBLEUPDATED
-    Bubbles : String : Hopla
     Bubbles : Bubble : createBubble(string strName, string strDescription, boolean boolWithHistory)
     Bubbles : Object : deleteBubble(Room bubble)
     Bubbles : Object : deleteAllBubbles()
@@ -30,6 +49,157 @@
     Bubbles : Bubble : updateDescriptionForBubble(string strDescription, Bubble bubble)
     Bubbles : Bubble : updateCustomDataForBubble(Object customData, Bubble bubble)
     Bubbles : Bubble : deleteCustomDataForBubble(Bubble bubble)
+    Capabilities : Object[] : getAll()
+    Capabilities : boolean : hasS4BExtensionEnabled()
+    Capabilities : boolean : hasOutlookExtensionEnabled()
+    Capabilities : boolean : hasCalendarPresenceEnabled()
+    Capabilities : boolean : hasTelephonyBasicCallEnabled()
+    Capabilities : boolean : hasTelephonySecondCallEnabled()
+    Capabilities : boolean : hasTelephonyTransferCallEnabled()
+    Capabilities : boolean : hasTelephonyConferenceCallEnabled()
+    Capabilities : boolean : hasTelephonyDeflectCallEnabled()
+    Capabilities : boolean : hasTelephonyForwardCallEnabled()
+    Capabilities : boolean : hasTelephonyPhoneBookEnabled()
+    Capabilities : boolean : hasTelephonyVoiceMailEnabled()
+    Capabilities : boolean : hasWebRTCAudioMobileEnabled()
+    Capabilities : boolean : hasWebRTCVideoMobileEnabled()
+    Capabilities : boolean : hasBridgeConferenceEnabled()
+    Capabilities : boolean : hasBridgeConferenceRecordEnabled()
+    Capabilities : boolean : hasBridgeConferenceDialOutEnabled()
+    Capabilities : Number : maxParticipantsPerBubbleAllowed()
+    Capabilities : Number : maxParticipantsPerBridgeConferenceAllowed()
+    Capabilities : Number : maxFileStorageQuotaAllowed()
+    Connection ::event : RAINBOW_ONSTARTED
+    Connection ::event : RAINBOW_ONSTOPPED
+    Connection : Object : signin(String strLogin, String strPassword)
+    Connection : Object : signinOnRainbowOfficial(String strLogin, String strPassword)
+    Connection : Object : signinSandBoxWithToken(String strToken)
+    Connection : Object : signinOnRainbowOfficialWithToken(String strToken)
+    Connection : Object : signout()
+    Connection : String : getState()
+    Contacts ::event : RAINBOW_ONCONTACTINFORMATIONCHANGED
+    Contacts ::event : RAINBOW_ONINFORMATIONCHANGED
+    Contacts ::event : RAINBOW_ONCONTACTINVITATIONNUMBERCHANGED
+    Contacts ::event : RAINBOW_ONCONTACTINVITATIONRECEIVED
+    Contacts : Contact : getContactByJID(String strJID)
+    Contacts : Contact : getContactById(String strId)
+    Contacts : Contact[] : getAll()
+    Contacts : Contact : getConnectedUser()
+    Contacts : Object : getConnectedUserPhone()
+    Contacts : Contact[] : searchByName(string strName)
+    Contacts : Contact : searchByLogin(string strLogin)
+    Contacts : Contact : searchByJid(string strJid)
+    Contacts : Contact : searchById(string strId)
+    Contacts : Object : acceptInvitation(Invitation invitation)
+    Contacts : Object : declineInvitation(Invitation invitation)
+    Contacts : Object : addToContactsList(Contact contact)
+    Contacts : Object : removeFromContactsList(Contact contact)
+    Contacts : Invitation : getInvitationById(String strInvitationId)
+    Contacts : Invitation[] : getInvitationsReceived()
+    Contacts : Invitation[] : getInvitationsSent()
+    Conversations ::event : RAINBOW_ONCONVERSATIONREMOVED
+    Conversations ::event : RAINBOW_ONCONVERSATIONCHANGED
+    Conversations ::event : RAINBOW_ONCONVERSATIONSCHANGED
+    Conversations ::event : RAINBOW_ONCONVERSATIONSMISSEDCOUNTERCHANGED
+    Conversations : Conversation[] : getAllConversations()
+    Conversations : Call : getCallById(String strCallId)
+    Conversations : Conversation : getConversationById(String strId)
+    Conversations : Conversation : getConversationByBubbleId(String strBubbleId)
+    Conversations : Conversation : openConversationForContact(Contact contact)
+    Conversations : Conversation : openConversationForBubble(Bubble bubble)
+    Conversations : void : closeConversation(Conversation conversation)
+    FileStorage ::event : RAINBOW_ONFILEUPLOADED
+    FileStorage ::event : RAINBOW_ONFILEUPLOADED_ERROR
+    FileStorage ::event : RAINBOW_ONFILEDOWNLOADED
+    FileStorage ::event : RAINBOW_ONFILEDOWNLOADED_ERROR
+    FileStorage : Message : uploadFileToConversation(Conversation conversation, File file, String strMessage)
+    FileStorage : Message : uploadFileToBubble(Bubble bubble, File file, String strMessage)
+    FileStorage : Blob : downloadFile(FileDescriptor fileDescriptor)
+    FileStorage : Object : removeFile(FileDescriptor fileDescriptor)
+    FileStorage : FileDescriptor[] : getFilesReceivedInConversation(Conversation conversation)
+    FileStorage : FileDescriptor[] : getFilesReceivedInBubble(Bubble bubble)
+    FileStorage : FileDescriptor[] : getFilesSentInConversation(Conversation conversation)
+    FileStorage : FileDescriptor[] : getFilesSentInBubble(Bubble bubble)
+    FileStorage : Object : getUserQuotaConsumption()
+    FileStorage : FileDescriptor[] : getAllFilesSent()
+    FileStorage : FileDescriptor[] : getAllFilesReceived()
+    Groups ::event : RAINBOW_ONGROUPCREATED
+    Groups ::event : RAINBOW_ONGROUPUPDATED
+    Groups ::event : RAINBOW_ONGROUPDELETED
+    Groups ::event : RAINBOW_ONGROUPUSERADDED
+    Groups ::event : RAINBOW_ONGROUPUSERREMOVED
+    Groups : Group : createGroup(string strName, string strDescription, boolean isFavorite)
+    Groups : Object : deleteGroup(Group group)
+    Groups : Object : deleteAllGroups()
+    Groups : Group[] : getGroups()
+    Groups : Group : getGroupById(string id)
+    Groups : Object : addContactInGroup(Contact contact, Group group)
+    Groups : Object : removeContactFromGroup(Contact contact, Group group)
+    IM ::event : RAINBOW_ONNEWIMMESSAGERECEIVED
+    IM ::event : RAINBOW_ONNEWIMRECEIPTRECEIVED
+    IM : Conversation : getMessagesFromConversation(Conversation conversation, Number intNbMessage)
+    IM : Message : getMessageFromConversationById(Conversation conversation, String strMessageId)
+    IM : Message : getMessageFromBubbleById(Bubble bubble, String strMessageId)
+    IM : Message : sendMessageToConversation(Conversation conversation, string strMessage)
+    IM : Message : sendMessageToBubble(Bubble bubble, string strMessage)
+    IM : Object : removeAllMessagesFromConversation(Conversation conversation)
+    IM : Object : markMessageFromConversationAsRead(Conversation conversation, Message message)
+    Telephony ::event : RAINBOW_ONTELEPHONYCALLSTATECHANGED
+    Telephony ::event : RAINBOW_ONTELEPHONYSTARTED
+    Telephony ::event : RAINBOW_ONTELEPHONYSTOPPED
+    Telephony : boolean : isTelephonyAvailable()
+    Telephony : string : getAgentVersion()
+    Telephony : string : getXMPPAgentStatus()
+    Telephony : string : getPhoneAPIStatus()
+    Telephony : Object : callByNumber(String strPhoneNumber)
+    Telephony : Call[] : calls()
+    Telephony : Object : release(Call call)
+    Telephony : Object : answer(Call call)
+    Telephony : Object : hold(Call call)
+    Telephony : Object : retrieve(Call call)
+    Presence ::event : RAINBOW_ONCONTACTPRESENCECHANGED
+    Presence ::event : RAINBOW_ONPRESENCECHANGED
+    Presence : Object : setPresenceTo(String strPresenceState)
+    SDK ::event : RAINBOW_ONREADY
+    SDK ::event : RAINBOW_ONLOADED
+    SDK : string : version()
+    SDK : string : mode()
+    SDK : void : setVerboseLog(boolean boolHasVerboseLog)
+    SDK : void : useAngularEvents(boolean boolUseAngularEvents)
+    SDK : void : initialize(string strApplicationID, string strApplicationSecret)
+    WebRTC ::event : RAINBOW_ONWEBRTCCALLSTATECHANGED
+    WebRTC ::event : RAINBOW_ONWEBRTCERRORHANDLED
+    WebRTC ::event : RAINBOW_ONWEBRTCSTREAMADDED
+    WebRTC ::event : RAINBOW_ONWEBRTCTRACKCHANGED
+    WebRTC ::event : RAINBOW_ONWEBRTCTMEDIAERROROCCURED
+    WebRTC : Object : setChromeExtensionIdForSharing(String strExtensionId)
+    WebRTC : Object : callInAudio(Contact contact)
+    WebRTC : Object : callInVideo(Contact contact)
+    WebRTC : Object : callInSharing(Contact contact)
+    WebRTC : Object : callinAudioWithSharing(Contact contact)
+    WebRTC : Object : answerInAudio(Call call)
+    WebRTC : Object : answerInVideo(Call call)
+    WebRTC : Object : showLocalVideo()
+    WebRTC : Object : hideLocalVideo()
+    WebRTC : Object : showRemoteVideo(Call call)
+    WebRTC : Object : hideRemoteVideo(Call call)
+    WebRTC : Object : escaladeToVideoCall(Call call)
+    WebRTC : Object : escaladeToSharingCall(Call call)
+    WebRTC : Object : reverseToAudioCall(Call call)
+    WebRTC : Object : release(Call call)
+    WebRTC : Object : reject(Call call)
+    WebRTC : Object : muteAudioCall(Conversation conversation)
+    WebRTC : Object : muteVideoCall(Conversation conversation)
+    WebRTC : Object : unmuteAudioCall(Conversation conversation)
+    WebRTC : Object : unmuteVideoCall(Conversation conversation)
+    WebRTC : boolean : canMakeAudioVideoCall()
+    WebRTC : boolean : hasAMicrophone()
+    WebRTC : Object : useMicrophone(string strMicrophoneId)
+    WebRTC : Object : useSpeaker(string strSpeakerId)
+    WebRTC : Object : useCamera(string strCameraId)
+    WebRTC : MediaStream[] : getLocalStreamsFromCall(Call call)
+    WebRTC : MediaStream[] : getRemoteStreamsFromCall(Call call)
+    WebRTC : Object : canMakeDesktopSharingCall()
   </div>
   <script src="./mermaid.js"></script>
   <script>

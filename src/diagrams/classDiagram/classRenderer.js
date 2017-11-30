@@ -276,7 +276,7 @@ const drawClass = function (elem, classDef) {
   const events = g.append('text') 
     .attr('x', conf.padding)
     .attr('y', titleHeight + (conf.dividerMargin) + conf.textHeight + conf.padding)
-    .attr('fille', 'white')
+    .attr('fill', 'white')
     .attr('class', 'eventText')
 
   let isFirst = true
@@ -386,6 +386,9 @@ export const draw = function (text, id) {
   const classes = classDb.getClasses()
   const keys = Object.keys(classes)
   for (let i = 0; i < keys.length; i++) {
+    if(classes[keys[i]].methods.length < 1 && classes[keys[i]].members.length < 1 && classes[keys[i]].events.length < 1) {
+      continue;
+    }
     const classDef = classes[keys[i]]
     const node = drawClass(diagram, classDef)
     // Add nodes to the graph. The first argument is the node id. The second is
@@ -397,6 +400,13 @@ export const draw = function (text, id) {
 
   const relations = classDb.getRelations()
   relations.forEach(function (relation) {
+    if(classDb.getClass(relation.id1).methods.length < 1 && classDb.getClass(relation.id1).members.length < 1 && classDb.getClass(relation.id1).events.length < 1) {
+      return;
+    }
+
+    if(classDb.getClass(relation.id2).methods.length < 1 && classDb.getClass(relation.id2).members.length < 1 && classDb.getClass(relation.id2).events.length < 1) {
+      return;
+    }
     logger.info('tjoho' + getGraphId(relation.id1) + getGraphId(relation.id2) + JSON.stringify(relation))
     g.setEdge(getGraphId(relation.id1), getGraphId(relation.id2), { relation: relation })
   })

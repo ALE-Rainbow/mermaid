@@ -11164,7 +11164,7 @@ var drawClass = function drawClass(elem, classDef) {
   var membersLine = g.append('line') // text label for the x axis
   .attr('x1', 0).attr('y1', conf.padding + titleHeight + conf.dividerMargin / 2).attr('y2', conf.padding + titleHeight + conf.dividerMargin / 2);
 
-  var events = g.append('text').attr('x', conf.padding).attr('y', titleHeight + conf.dividerMargin + conf.textHeight + conf.padding).attr('fille', 'white').attr('class', 'eventText');
+  var events = g.append('text').attr('x', conf.padding).attr('y', titleHeight + conf.dividerMargin + conf.textHeight + conf.padding).attr('fill', 'white').attr('class', 'eventText');
 
   var isFirst = true;
   classDef.events.forEach(function (event) {
@@ -11255,6 +11255,9 @@ var draw = exports.draw = function draw(text, id) {
   var classes = _classDb2.default.getClasses();
   var keys = Object.keys(classes);
   for (var i = 0; i < keys.length; i++) {
+    if (classes[keys[i]].methods.length < 1 && classes[keys[i]].members.length < 1 && classes[keys[i]].events.length < 1) {
+      continue;
+    }
     var classDef = classes[keys[i]];
     var node = drawClass(diagram, classDef);
     // Add nodes to the graph. The first argument is the node id. The second is
@@ -11266,6 +11269,13 @@ var draw = exports.draw = function draw(text, id) {
 
   var relations = _classDb2.default.getRelations();
   relations.forEach(function (relation) {
+    if (_classDb2.default.getClass(relation.id1).methods.length < 1 && _classDb2.default.getClass(relation.id1).members.length < 1 && _classDb2.default.getClass(relation.id1).events.length < 1) {
+      return;
+    }
+
+    if (_classDb2.default.getClass(relation.id2).methods.length < 1 && _classDb2.default.getClass(relation.id2).members.length < 1 && _classDb2.default.getClass(relation.id2).events.length < 1) {
+      return;
+    }
     _logger.logger.info('tjoho' + getGraphId(relation.id1) + getGraphId(relation.id2) + JSON.stringify(relation));
     g.setEdge(getGraphId(relation.id1), getGraphId(relation.id2), { relation: relation });
   });
