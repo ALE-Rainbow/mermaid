@@ -11076,7 +11076,6 @@ var drawEdge = function drawEdge(elem, path, relation) {
   }).y(function (d) {
     return d.y;
   }).interpolate('basis');
-
   var svgPath = elem.append('path').attr('d', lineFunction(lineData)).attr('id', 'edge' + edgeCount).attr('class', 'relation');
   var url = '';
   if (conf.arrowMarkerAbsolute) {
@@ -11189,10 +11188,10 @@ var drawClass = function drawClass(elem, classDef) {
   var membersBox = members.node().getBBox();
 
   var methodsLine = g.append('line') // text label for the x axis
-  .attr('x1', 0).attr('y1', eventsBox.y + eventsBox.height + +conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin).attr('y2', eventsBox.y + eventsBox.height + +conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin);
+  .attr('x1', 0).attr('y1', eventsBox.y + eventsBox.height + conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin).attr('y2', eventsBox.y + eventsBox.height + conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin);
 
   var methods = g.append('text') // text label for the x axis
-  .attr('x', conf.padding).attr('y', eventsBox.y + eventsBox.height + +conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin + conf.separate).attr('fill', 'white').attr('class', 'classText');
+  .attr('x', conf.padding).attr('y', eventsBox.y + eventsBox.height + conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin + conf.separate).attr('fill', 'white').attr('class', 'classText');
 
   isFirst = true;
 
@@ -11214,8 +11213,8 @@ var drawClass = function drawClass(elem, classDef) {
 
   g.insert('rect', ':first-child').attr('x', 0).attr('y', 0).attr('rx', rounded).attr('ry', rounded).attr('width', width).attr('height', height).attr('stroke-width', "3px");
 
-  classInfo.width = classBox.width * 1.05 + 2 * conf.padding;
-  classInfo.height = classBox.height + conf.padding + 0.5 * conf.dividerMargin;
+  classInfo.width = width;
+  classInfo.height = height;
 
   membersLine.attr('x2', width);
   methodsLine.attr('x2', width);

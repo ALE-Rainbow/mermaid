@@ -147,7 +147,6 @@ const drawEdge = function (elem, path, relation) {
       return d.y
     })
     .interpolate('basis')
-
   const svgPath = elem.append('path')
     .attr('d', lineFunction(lineData))
     .attr('id', 'edge' + edgeCount)
@@ -306,12 +305,12 @@ const drawClass = function (elem, classDef) {
 
   const methodsLine = g.append('line')      // text label for the x axis
     .attr('x1', 0)
-    .attr('y1', eventsBox.y + eventsBox.height + +conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin)
-    .attr('y2', eventsBox.y + eventsBox.height + +conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin)
+    .attr('y1', eventsBox.y + eventsBox.height + conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin)
+    .attr('y2', eventsBox.y + eventsBox.height + conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin)
 
   const methods = g.append('text')      // text label for the x axis
     .attr('x', conf.padding)
-    .attr('y', eventsBox.y + eventsBox.height + +conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin + conf.separate)
+    .attr('y', eventsBox.y + eventsBox.height + conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin + conf.separate)
     .attr('fill', 'white')
     .attr('class', 'classText')
 
@@ -351,8 +350,8 @@ const drawClass = function (elem, classDef) {
     .attr('height', height)
     .attr('stroke-width', "3px")
 
-  classInfo.width = classBox.width * 1.05 + 2 * conf.padding
-  classInfo.height = classBox.height + conf.padding + 0.5 * conf.dividerMargin
+  classInfo.width = width;
+  classInfo.height = height;
 
   membersLine.attr('x2', width)
   methodsLine.attr('x2', width)
