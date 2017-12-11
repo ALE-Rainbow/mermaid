@@ -11140,9 +11140,38 @@ var drawClass = function drawClass(elem, classDef) {
   var addTspan = function addTspan(textEl, txt, isFirst) {
     // CALLBACK SEPARER EN 3 TSPAN
 
-    var tSpan = textEl.append('tspan').attr('x', conf.padding).text(txt);
-    if (!isFirst) {
-      tSpan.attr('dy', conf.textHeight + conf.padding);
+    var addSplitTspan = function addSplitTspan(text, isFirstX, className) {
+      var tSpan = textEl.append('tspan').text(text).attr('class', className);
+
+      if (!isFirst && isFirstX) {
+        tSpan.attr('dy', conf.textHeight + conf.padding);
+      }
+
+      if (isFirstX) {
+        tSpan.attr("x", conf.padding);
+      }
+    };
+
+    var arr = txt.split(":");
+
+    if (arr.length > 1) {
+      var type = arr[0] + " :";
+      var name = arr[1].replace(/\(.*\)/, "");
+
+      addSplitTspan(type, true, "type");
+      addSplitTspan(name, false, "name");
+
+      if (arr[1]) {
+        var params = arr[1].split("(")[1];
+        if (params !== undefined) {
+          addSplitTspan("(" + params, false, "params");
+        }
+      }
+    } else {
+      var tSpan = textEl.append('tspan').attr('x', conf.padding).text(txt);
+      if (!isFirst) {
+        tSpan.attr('dy', conf.textHeight + conf.padding);
+      }
     }
   };
 
