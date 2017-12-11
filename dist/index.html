@@ -5,6 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Mermaid Quick Test Page</title>
   <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet">
 </head>
 <body>
   <div class="mermaid">
@@ -30,6 +31,12 @@
     FileStorage --> Conversations
     Conversations --> Bubbles
     CPaas Service --> WebRTC
+    WebRTC --> Capabilities
+    SDK --> Groups
+    SDK : String : monAttribut
+    SDK : String : monAttribut2
+    SDK : String : monAttribut3
+    SDK : String : monAttribut4
     Bubbles ::event : RAINBOW_ONBUBBLEINVITATIONTOJOINRECEIVED
     Bubbles ::event : RAINBOW_ONBUBBLEUPDATED
     Bubbles : Bubble : createBubble(string strName, string strDescription, boolean boolWithHistory)

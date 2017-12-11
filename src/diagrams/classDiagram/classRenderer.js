@@ -13,8 +13,9 @@ const idCache = {}
 let classCnt = 0
 const conf = {
   dividerMargin: 10,
-  padding: 5,
-  textHeight: 8
+  padding: 8,
+  textHeight: 20,
+  separate: 20
 }
 
 // Todo optimize
@@ -236,12 +237,13 @@ const drawEdge = function (elem, path, relation) {
 const drawClass = function (elem, classDef) {
   logger.info('Rendering class ' + classDef)
 
-  const addTspan = function (textEl, txt, isFirst) {
+  const addTspan = function (textEl, txt, isFirst) { // CALLBACK SEPARER EN 3 TSPAN
+
     const tSpan = textEl.append('tspan')
       .attr('x', conf.padding)
       .text(txt)
     if (!isFirst) {
-      tSpan.attr('dy', conf.textHeight)
+      tSpan.attr('dy', conf.textHeight + conf.padding)
     }
   }
 
@@ -262,7 +264,7 @@ const drawClass = function (elem, classDef) {
     .attr('class', 'classGroup')
   const title = g.append('text')
     .attr('x', conf.padding)
-    .attr('y', conf.textHeight + conf.padding)
+    .attr('y', conf.textHeight + conf.padding / 2)
     .attr('class', 'classTitle')
     .text(classDef.id + enumeration)
 
@@ -275,7 +277,7 @@ const drawClass = function (elem, classDef) {
 
   const events = g.append('text') 
     .attr('x', conf.padding)
-    .attr('y', titleHeight + (conf.dividerMargin) + conf.textHeight + conf.padding)
+    .attr('y', titleHeight + conf.dividerMargin + conf.textHeight + conf.padding)
     .attr('fill', 'white')
     .attr('class', 'eventText')
 
@@ -290,7 +292,7 @@ const drawClass = function (elem, classDef) {
 
   const members = g.append('text')      // text label for the x axis
     .attr('x', conf.padding)
-    .attr('y', titleHeight + (conf.dividerMargin) + conf.textHeight + conf.padding + eventsBox.height)
+    .attr('y', eventsBox.y + eventsBox.height + conf.dividerMargin + conf.separate)
     .attr('fill', 'white')
     .attr('class', 'classText')
 
@@ -304,12 +306,12 @@ const drawClass = function (elem, classDef) {
 
   const methodsLine = g.append('line')      // text label for the x axis
     .attr('x1', 0)
-    .attr('y1', conf.padding + titleHeight + conf.dividerMargin + eventsBox.height + membersBox.height)
-    .attr('y2', conf.padding + titleHeight + conf.dividerMargin + eventsBox.height + membersBox.height)
+    .attr('y1', eventsBox.y + eventsBox.height + +conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin)
+    .attr('y2', eventsBox.y + eventsBox.height + +conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin)
 
   const methods = g.append('text')      // text label for the x axis
     .attr('x', conf.padding)
-    .attr('y', titleHeight + 2 * conf.dividerMargin + eventsBox.height + membersBox.height + conf.textHeight)
+    .attr('y', eventsBox.y + eventsBox.height + +conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin + conf.separate)
     .attr('fill', 'white')
     .attr('class', 'classText')
 
@@ -322,24 +324,40 @@ const drawClass = function (elem, classDef) {
 
   const classBox = g.node().getBBox()
 
-  g.insert('rect', ':first-child')
+  const addTopRounded = function rightTopRoundedRect(x, y, width, height, radius) {
+    return "M" + (x + radius) + "," + y
+         + "h" + (width - radius * 2)
+         + "a" + radius + " " + radius + " 0 0 1 " + radius + "," + radius
+         + "v" + (height - radius)
+         + "h" + (- width)
+         + "v" + (-height + radius)
+         + "a" + radius + "," + radius + " 0 0 1 " + radius + "," + (-radius)
+         + "z";
+  }
+
+  var width = classBox.width * 1.09 + 2 * conf.padding
+  var height = classBox.height + conf.padding + conf.separate
+  var rounded = 10;
+  g.insert('path', ':first-child')
+    .attr('d', addTopRounded(0, 0, width, conf.padding + titleHeight + conf.dividerMargin / 2 , rounded))
     .attr('class', 'classTitleBox')
-    .attr('x', 0)
-    .attr('y', 0)
-    .attr('width', classBox.width + 2 * conf.padding)
-    .attr('height', conf.padding + titleHeight + conf.dividerMargin / 2)
 
   g.insert('rect' , ':first-child')
     .attr('x', 0)
     .attr('y', 0)
-    .attr('width', classBox.width + 2 * conf.padding)
-    .attr('height', classBox.height + conf.padding + 0.5 * conf.dividerMargin)
+    .attr('rx', rounded)
+    .attr('ry', rounded)
+    .attr('width', width)
+    .attr('height', height)
+    .attr('stroke-width', "3px")
 
-  membersLine.attr('x2', classBox.width + 2 * conf.padding)
-  methodsLine.attr('x2', classBox.width + 2 * conf.padding)
-
-  classInfo.width = classBox.width + 2 * conf.padding
+  classInfo.width = classBox.width * 1.05 + 2 * conf.padding
   classInfo.height = classBox.height + conf.padding + 0.5 * conf.dividerMargin
+
+  membersLine.attr('x2', width)
+  methodsLine.attr('x2', width)
+
+
 
   idCache[id] = classInfo
   classCnt++

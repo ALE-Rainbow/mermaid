@@ -11014,8 +11014,9 @@ var idCache = {};
 var classCnt = 0;
 var conf = {
   dividerMargin: 10,
-  padding: 5,
-  textHeight: 8
+  padding: 8,
+  textHeight: 20,
+  separate: 20
 
   // Todo optimize
 };var getGraphId = function getGraphId(label) {
@@ -11138,9 +11139,11 @@ var drawClass = function drawClass(elem, classDef) {
   _logger.logger.info('Rendering class ' + classDef);
 
   var addTspan = function addTspan(textEl, txt, isFirst) {
+    // CALLBACK SEPARER EN 3 TSPAN
+
     var tSpan = textEl.append('tspan').attr('x', conf.padding).text(txt);
     if (!isFirst) {
-      tSpan.attr('dy', conf.textHeight);
+      tSpan.attr('dy', conf.textHeight + conf.padding);
     }
   };
 
@@ -11157,7 +11160,7 @@ var drawClass = function drawClass(elem, classDef) {
     enumeration = ' <<enum>>';
   }
   var g = elem.append('g').attr('id', id).attr('class', 'classGroup');
-  var title = g.append('text').attr('x', conf.padding).attr('y', conf.textHeight + conf.padding).attr('class', 'classTitle').text(classDef.id + enumeration);
+  var title = g.append('text').attr('x', conf.padding).attr('y', conf.textHeight + conf.padding / 2).attr('class', 'classTitle').text(classDef.id + enumeration);
 
   var titleHeight = title.node().getBBox().height;
 
@@ -11175,7 +11178,7 @@ var drawClass = function drawClass(elem, classDef) {
   var eventsBox = events.node().getBBox();
 
   var members = g.append('text') // text label for the x axis
-  .attr('x', conf.padding).attr('y', titleHeight + conf.dividerMargin + conf.textHeight + conf.padding + eventsBox.height).attr('fill', 'white').attr('class', 'classText');
+  .attr('x', conf.padding).attr('y', eventsBox.y + eventsBox.height + conf.dividerMargin + conf.separate).attr('fill', 'white').attr('class', 'classText');
 
   isFirst = true;
   classDef.members.forEach(function (member) {
@@ -11186,10 +11189,10 @@ var drawClass = function drawClass(elem, classDef) {
   var membersBox = members.node().getBBox();
 
   var methodsLine = g.append('line') // text label for the x axis
-  .attr('x1', 0).attr('y1', conf.padding + titleHeight + conf.dividerMargin + eventsBox.height + membersBox.height).attr('y2', conf.padding + titleHeight + conf.dividerMargin + eventsBox.height + membersBox.height);
+  .attr('x1', 0).attr('y1', eventsBox.y + eventsBox.height + +conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin).attr('y2', eventsBox.y + eventsBox.height + +conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin);
 
   var methods = g.append('text') // text label for the x axis
-  .attr('x', conf.padding).attr('y', titleHeight + 2 * conf.dividerMargin + eventsBox.height + membersBox.height + conf.textHeight).attr('fill', 'white').attr('class', 'classText');
+  .attr('x', conf.padding).attr('y', eventsBox.y + eventsBox.height + +conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin + conf.separate).attr('fill', 'white').attr('class', 'classText');
 
   isFirst = true;
 
@@ -11200,15 +11203,22 @@ var drawClass = function drawClass(elem, classDef) {
 
   var classBox = g.node().getBBox();
 
-  g.insert('rect', ':first-child').attr('class', 'classTitleBox').attr('x', 0).attr('y', 0).attr('width', classBox.width + 2 * conf.padding).attr('height', conf.padding + titleHeight + conf.dividerMargin / 2);
+  var addTopRounded = function rightTopRoundedRect(x, y, width, height, radius) {
+    return "M" + (x + radius) + "," + y + "h" + (width - radius * 2) + "a" + radius + " " + radius + " 0 0 1 " + radius + "," + radius + "v" + (height - radius) + "h" + -width + "v" + (-height + radius) + "a" + radius + "," + radius + " 0 0 1 " + radius + "," + -radius + "z";
+  };
 
-  g.insert('rect', ':first-child').attr('x', 0).attr('y', 0).attr('width', classBox.width + 2 * conf.padding).attr('height', classBox.height + conf.padding + 0.5 * conf.dividerMargin);
+  var width = classBox.width * 1.09 + 2 * conf.padding;
+  var height = classBox.height + conf.padding + conf.separate;
+  var rounded = 10;
+  g.insert('path', ':first-child').attr('d', addTopRounded(0, 0, width, conf.padding + titleHeight + conf.dividerMargin / 2, rounded)).attr('class', 'classTitleBox');
 
-  membersLine.attr('x2', classBox.width + 2 * conf.padding);
-  methodsLine.attr('x2', classBox.width + 2 * conf.padding);
+  g.insert('rect', ':first-child').attr('x', 0).attr('y', 0).attr('rx', rounded).attr('ry', rounded).attr('width', width).attr('height', height).attr('stroke-width', "3px");
 
-  classInfo.width = classBox.width + 2 * conf.padding;
+  classInfo.width = classBox.width * 1.05 + 2 * conf.padding;
   classInfo.height = classBox.height + conf.padding + 0.5 * conf.dividerMargin;
+
+  membersLine.attr('x2', width);
+  methodsLine.attr('x2', width);
 
   idCache[id] = classInfo;
   classCnt++;
@@ -11775,7 +11785,7 @@ exports = module.exports = __webpack_require__(6)(undefined);
 
 
 // module
-exports.push([module.i, "/* Flowchart variables */\n/* Sequence Diagram variables */\n/* Gantt chart variables */\ng.classGroup text {\n  fill: #0088CC;\n  stroke: none;\n  font-family: 'trebuchet ms', verdana, arial;\n  font-size: 8px;\n}\ng.classGroup text.eventText {\n  fill: #c72115;\n}\ng.classGroup rect.classTitleBox {\n  fill: #0088CC;\n}\ng.classGroup text.classTitle {\n  fill: #FFF;\n  font-size: 10px;\n}\ng.classGroup rect {\n  fill: #FFF;\n  stroke: #0088CC;\n}\ng.classGroup line {\n  stroke: #0088CC;\n  stroke-width: 1;\n}\nsvg .classLabel .box {\n  stroke: none;\n  stroke-width: 0;\n  fill: #FFF;\n  opacity: 0.6;\n}\nsvg .classLabel .label {\n  fill: #FF9A00;\n  font-size: 10px;\n}\n.relation {\n  stroke: #0088CC;\n  stroke-width: 1;\n  fill: none;\n}\n.composition {\n  fill: #0088CC;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#compositionStart {\n  fill: #0088CC;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#compositionEnd {\n  fill: #0088CC;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n.aggregation {\n  fill: #FFF;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#aggregationStart {\n  fill: #FFF;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#aggregationEnd {\n  fill: #FFF;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#dependencyStart {\n  fill: #0088CC;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#dependencyEnd {\n  fill: #0088CC;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#extensionStart {\n  fill: #0088CC;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#extensionEnd {\n  fill: #0088CC;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n.node text {\n  font-family: 'trebuchet ms', verdana, arial;\n  font-size: 14px;\n}\ndiv.mermaidTooltip {\n  position: absolute;\n  text-align: center;\n  max-width: 200px;\n  padding: 2px;\n  font-family: 'trebuchet ms', verdana, arial;\n  font-size: 12px;\n  background: #eaf2fb;\n  border: 1px solid #26a;\n  border-radius: 2px;\n  pointer-events: none;\n  z-index: 100;\n}\nbody {\n  background-color: #dedede;\n}\n", ""]);
+exports.push([module.i, "/* Flowchart variables */\n/* Sequence Diagram variables */\n/* Gantt chart variables */\ng.classGroup text {\n  fill: #0088CC;\n  stroke: none;\n  font-family: 'trebuchet ms', verdana, arial;\n  font-size: 16px;\n}\ng.classGroup text.eventText {\n  fill: #c72115;\n}\ng.classGroup path.classTitleBox {\n  fill: #0088CC;\n}\ng.classGroup text.classTitle {\n  fill: #FFF;\n  font-size: 20px;\n}\ng.classGroup rect {\n  fill: #FFF;\n  stroke: #0088CC;\n}\ng.classGroup line {\n  stroke: #0088CC;\n  stroke-width: 1;\n}\nsvg .classLabel .box {\n  stroke: none;\n  stroke-width: 0;\n  fill: #FFF;\n  opacity: 0.6;\n}\nsvg .classLabel .label {\n  fill: #FF9A00;\n  font-size: 10px;\n}\n.relation {\n  stroke: #0088CC;\n  stroke-width: 1;\n  fill: none;\n}\n.composition {\n  fill: #0088CC;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#compositionStart {\n  fill: #0088CC;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#compositionEnd {\n  fill: #0088CC;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n.aggregation {\n  fill: #FFF;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#aggregationStart {\n  fill: #FFF;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#aggregationEnd {\n  fill: #FFF;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#dependencyStart {\n  fill: #0088CC;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#dependencyEnd {\n  fill: #0088CC;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#extensionStart {\n  fill: #0088CC;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n#extensionEnd {\n  fill: #0088CC;\n  stroke: #0088CC;\n  stroke-width: 1;\n}\n.node text {\n  font-family: 'trebuchet ms', verdana, arial;\n  font-size: 14px;\n}\ndiv.mermaidTooltip {\n  position: absolute;\n  text-align: center;\n  max-width: 200px;\n  padding: 2px;\n  font-family: 'trebuchet ms', verdana, arial;\n  font-size: 12px;\n  background: #eaf2fb;\n  border: 1px solid #26a;\n  border-radius: 2px;\n  pointer-events: none;\n  z-index: 100;\n}\nbody {\n  background-color: #dedede;\n}\n", ""]);
 
 // exports
 
