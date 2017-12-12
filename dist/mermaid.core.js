@@ -11238,9 +11238,12 @@ var drawClass = function drawClass(elem, classDef) {
   var width = classBox.width * 1.09 + 2 * conf.padding;
   var height = classBox.height + conf.padding + conf.separate;
   var rounded = 10;
+
   g.insert('path', ':first-child').attr('d', addTopRounded(0, 0, width, conf.padding + titleHeight + conf.dividerMargin / 2, rounded)).attr('class', 'classTitleBox');
 
   g.insert('rect', ':first-child').attr('x', 0).attr('y', 0).attr('rx', rounded).attr('ry', rounded).attr('width', width).attr('height', height).attr('stroke-width', "3px");
+
+  g.insert('rect', ':first-child').attr('x', 0).attr('y', 0).attr('rx', rounded).attr('ry', rounded).attr('width', width).attr('height', height).attr('stroke-width', "6px").attr('class', 'border');
 
   classInfo.width = width;
   classInfo.height = height;
