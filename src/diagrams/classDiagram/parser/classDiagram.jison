@@ -35,7 +35,6 @@
 \s*\*                  return 'COMPOSITION';
 \s*o                  return 'AGGREGATION';
 \s*\#                return 'FAKE';
-\s*\#                 return 'FAKE';
 \-\-                  return 'LINE';
 \.\.                  return 'DOTTED_LINE';
 ":"[^#\n;]+        return 'LABEL';

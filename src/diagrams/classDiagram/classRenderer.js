@@ -160,7 +160,7 @@ const drawEdge = function (elem, path, relation) {
     .attr('d', lineFunction(lineData))
     .attr('id', 'edge' + edgeCount)
     .attr('class', classRelation)
-    
+
   let url = ''
   if (conf.arrowMarkerAbsolute) {
     url = window.location.protocol + '//' + window.location.host + window.location.pathname + window.location.search
@@ -213,14 +213,14 @@ const drawEdge = function (elem, path, relation) {
   x = Math.ceil(lineData[0].x)
   y = Math.ceil(lineData[0].y)
 
-  if(lineData[0].x > lineData[lineData.length-1].x) {
+  if(lineData[0].x > lineData[1].x) {
     x -= 15;
   }
   else {
     x += 15;
   }
 
-  if(lineData[0].y > lineData[lineData.length-1].y) {
+  if(lineData[0].y > lineData[1].y) {
     y -= 15;
   }
   else {
@@ -242,14 +242,14 @@ const drawEdge = function (elem, path, relation) {
   x = Math.floor(lineData[lineData.length - 1].x)
   y = Math.floor(lineData[lineData.length - 1].y)
 
-  if(lineData[0].x > lineData[lineData.length-1].x) {
+  if(lineData[lineData.length-2].x > lineData[lineData.length-1].x) {
     x += 20;
   }
   else {
     x -= 20;
   }
 
-  if(lineData[0].y > lineData[lineData.length-1].y) {
+  if(lineData[lineData.length-2].y > lineData[lineData.length-1].y) {
     y += 20;
   }
   else {
@@ -385,12 +385,12 @@ const drawClass = function (elem, classDef) {
   if(classDef.methods.length > 0) {
     methodsLine = g.append('line')      // text label for the x axis
       .attr('x1', 0)
-      .attr('y1', membersBox.y + membersBox.height + conf.separate)
-      .attr('y2', membersBox.y + membersBox.height + conf.separate)
+      .attr('y1', y + membersBox.height + conf.separate)
+      .attr('y2', y + membersBox.height + conf.separate)
 
     const methods = g.append('text')      // text label for the x axis
       .attr('x', conf.padding)
-      .attr('y', membersBox.y + membersBox.height + conf.separate*2 + conf.dividerMargin)
+      .attr('y', y + membersBox.height + conf.separate*2 + conf.dividerMargin)
       .attr('fill', 'white')
       .attr('class', 'classText')
 
@@ -415,9 +415,21 @@ const drawClass = function (elem, classDef) {
          + "z";
   }
 
-  var width = classBox.width * 1.09 + 2 * conf.padding
+  var width 
+  
+  if(title.node().getBoundingClientRect().width >= classBox.width - conf.padding) {
+    width = title.node().getBoundingClientRect().width * 1.39 + 2 * conf.padding
+  }
+  else {
+    width = classBox.width * 1.09 + 2 * conf.padding
+  }
+
   var height = classBox.height + conf.padding + conf.separate
   var rounded = 10;
+
+  
+  //console.log(title.node().getBoundingClientRect().width + " - " + classBox.width + " - " + width);
+
 
   g.insert('path', ':first-child')
     .attr('d', addTopRounded(0, 0, width, conf.padding + titleHeight + conf.dividerMargin / 2 , rounded))
