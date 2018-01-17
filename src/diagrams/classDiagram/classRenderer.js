@@ -199,35 +199,63 @@ const drawEdge = function (elem, path, relation) {
       .attr('width', bounds.width + conf.padding)
       .attr('height', bounds.height + conf.padding)
   }
-
+  
   x = Math.ceil(lineData[0].x)
   y = Math.ceil(lineData[0].y)
+
+  if(lineData[0].x > lineData[lineData.length-1].x) {
+    x -= 15;
+  }
+  else {
+    x += 15;
+  }
+
+  if(lineData[0].y > lineData[lineData.length-1].y) {
+    y -= 15;
+  }
+  else {
+    y += 15;
+  }
 
   if (relation.cardinality1 !== 'none') {
     const g = elem.append('g')
       .attr('class', 'classLabel')
     g.append('text')
-      .attr('class', 'label')
-      .attr('x', x + 12)
-      .attr('y', y + 12)
+      .attr('class', 'labelCard')
+      .attr('x', x)
+      .attr('y', y)
       .attr('fill', 'red')
       .attr('text-anchor', 'middle')
-      .text(relation.cardinality1)
+      .text(relation.cardinality1.replace(/[\[\]]/g,""))
   }
 
   x = Math.floor(lineData[lineData.length - 1].x)
   y = Math.floor(lineData[lineData.length - 1].y)
 
+  if(lineData[0].x > lineData[lineData.length-1].x) {
+    x += 20;
+  }
+  else {
+    x -= 20;
+  }
+
+  if(lineData[0].y > lineData[lineData.length-1].y) {
+    y += 20;
+  }
+  else {
+    y -= 20;
+  }
+
   if (relation.cardinality2 !== 'none') {
     const g = elem.append('g')
       .attr('class', 'classLabel')
     g.append('text')
-      .attr('class', 'label')
+      .attr('class', 'labelCard')
       .attr('x', x + 12)
       .attr('y', y - 8)
       .attr('fill', 'red')
       .attr('text-anchor', 'middle')
-      .text(relation.cardinality2)
+      .text(relation.cardinality2.replace(/[\[\]]/g,""))
   }
 
   edgeCount++
@@ -319,11 +347,19 @@ const drawClass = function (elem, classDef) {
   })
 
   const eventsBox = events.node().getBBox()
-  
+
+  var y = 0;
+
+  if(eventsBox.height > 0) {
+    y = eventsBox.y + eventsBox.height + conf.dividerMargin + conf.separate;
+  }
+  else {
+    y = titleHeight + conf.dividerMargin + conf.textHeight + conf.padding;
+  }
 
   const members = g.append('text')      // text label for the x axis
     .attr('x', conf.padding)
-    .attr('y', eventsBox.y + eventsBox.height + conf.dividerMargin + conf.separate)
+    .attr('y', y)
     .attr('fill', 'white')
     .attr('class', 'classText')
 
@@ -334,24 +370,27 @@ const drawClass = function (elem, classDef) {
   })
 
   const membersBox = members.node().getBBox()
+  var methodsLine;
 
-  const methodsLine = g.append('line')      // text label for the x axis
-    .attr('x1', 0)
-    .attr('y1', eventsBox.y + eventsBox.height + conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin)
-    .attr('y2', eventsBox.y + eventsBox.height + conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin)
+  if(classDef.methods.length > 0) {
+    methodsLine = g.append('line')      // text label for the x axis
+      .attr('x1', 0)
+      .attr('y1', membersBox.y + membersBox.height + conf.separate)
+      .attr('y2', membersBox.y + membersBox.height + conf.separate)
 
-  const methods = g.append('text')      // text label for the x axis
-    .attr('x', conf.padding)
-    .attr('y', eventsBox.y + eventsBox.height + conf.dividerMargin + conf.separate + membersBox.height + conf.dividerMargin + conf.separate)
-    .attr('fill', 'white')
-    .attr('class', 'classText')
+    const methods = g.append('text')      // text label for the x axis
+      .attr('x', conf.padding)
+      .attr('y', membersBox.y + membersBox.height + conf.separate*2 + conf.dividerMargin)
+      .attr('fill', 'white')
+      .attr('class', 'classText')
 
-  isFirst = true
+    isFirst = true
 
-  classDef.methods.forEach(function (method) {
-    addTspan(methods, method, isFirst)
-    isFirst = false
-  })
+    classDef.methods.forEach(function (method) {
+      addTspan(methods, method, isFirst)
+      isFirst = false
+    })
+  }
 
   const classBox = g.node().getBBox()
 
@@ -397,9 +436,10 @@ const drawClass = function (elem, classDef) {
   classInfo.height = height;
 
   membersLine.attr('x2', width)
-  methodsLine.attr('x2', width)
 
-
+  if(classDef.methods.length > 0) {
+    methodsLine.attr('x2', width)
+  }
 
   idCache[id] = classInfo
   classCnt++
