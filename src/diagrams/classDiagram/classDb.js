@@ -80,7 +80,8 @@ export const relationType = {
   AGGREGATION: 0,
   EXTENSION: 1,
   COMPOSITION: 2,
-  DEPENDENCY: 3
+  DEPENDENCY: 3,
+  FAKE: 4,
 }
 
 export default {

@@ -132,6 +132,8 @@ const drawEdge = function (elem, path, relation) {
         return 'composition'
       case classDb.relationType.DEPENDENCY:
         return 'dependency'
+      case classDb.relationType.FAKE:
+        return ''
     }
   }
 
@@ -147,10 +149,18 @@ const drawEdge = function (elem, path, relation) {
       return d.y
     })
     .interpolate('basis')
+
+  var classRelation = "relation";
+
+  if(relation.relation.type1 === 4 || relation.relation.type2 === 4) {
+    classRelation = "hideRelation";
+  }
+
   const svgPath = elem.append('path')
     .attr('d', lineFunction(lineData))
     .attr('id', 'edge' + edgeCount)
-    .attr('class', 'relation')
+    .attr('class', classRelation)
+    
   let url = ''
   if (conf.arrowMarkerAbsolute) {
     url = window.location.protocol + '//' + window.location.host + window.location.pathname + window.location.search
@@ -199,7 +209,7 @@ const drawEdge = function (elem, path, relation) {
       .attr('width', bounds.width + conf.padding)
       .attr('height', bounds.height + conf.padding)
   }
-  
+
   x = Math.ceil(lineData[0].x)
   y = Math.ceil(lineData[0].y)
 

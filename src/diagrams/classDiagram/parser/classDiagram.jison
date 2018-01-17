@@ -34,6 +34,8 @@
 \s*\<                 return 'DEPENDENCY';
 \s*\*                  return 'COMPOSITION';
 \s*o                  return 'AGGREGATION';
+\s*\#                return 'FAKE';
+\s*\#                 return 'FAKE';
 \-\-                  return 'LINE';
 \.\.                  return 'DOTTED_LINE';
 ":"[^#\n;]+        return 'LABEL';
@@ -170,7 +172,7 @@ eventStatement
     ;
 
 relationStatement
-    : className relation className          { $$ = {'id1':$1,'id2':$3, relation:$2, relationTitle1:'none', relationTitle2:'none'}; }
+    : className relation className          { $$ = {'id1':$1,'id2':$3, relation:$2, cardinality1:'none', cardinality2:'none',relationTitle1:'none', relationTitle2:'none'}; }
     | className CARDINALITY relation className { $$ = {'id1':$1,'id2':$4, relation:$3, cardinality1:$2, cardinality2:'none', relationTitle1:'none', relationTitle2:'none'}; }
     | className relation CARDINALITY className { $$ = {'id1':$1,'id2':$4, relation:$2, cardinality1:'none', cardinality2:$3, relationTitle1:'none', relationTitle2:'none'}; }
     | className CARDINALITY relation CARDINALITY className { $$ = {'id1':$1,'id2':$5, relation:$3, cardinality1:$2, cardinality2:$4, relationTitle1:'none', relationTitle2:'none'}; }
@@ -198,6 +200,7 @@ relation
 relationType
     : AGGREGATION { $$=yy.relationType.AGGREGATION;}
     | EXTENSION   { $$=yy.relationType.EXTENSION;}
+    | FAKE        { $$=yy.relationType.FAKE;}
     | COMPOSITION { $$=yy.relationType.COMPOSITION;}
     | DEPENDENCY  { $$=yy.relationType.DEPENDENCY;}
     ;
